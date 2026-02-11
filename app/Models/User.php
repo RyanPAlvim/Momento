@@ -19,8 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'phone',
+        'weekly_day_goals',
+        'daily_minutes_goal',
+        'profile_picture_path',
+        'is_private',
     ];
 
     /**
@@ -44,5 +50,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function friendsRequested() {
+        return $this->belongsToMany(User::class, 'friendship', 'user_id', 'friend_id')
+        ->withPivot('status');
+    }
+
+    public function friendsOf(){
+        return $this->belongsToMany(User::class, 'friendship', 'friend_id', 'user_id')
+        ->withPivot('status');
+    }
+
+    public function getAllFriends(){
+        return $this->friendsRequested()->merge($this->friendsOf());
+    }
+
+    public function getAllAcceptedFriends() {
+        return $this->getAllFriends()->wherePivot('status', 'accepted');
     }
 }
