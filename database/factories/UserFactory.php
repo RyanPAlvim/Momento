@@ -5,6 +5,8 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use app\Enums;
+use App\Enums\SecondaryActivities;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -32,10 +34,10 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'phone' => fake()->phoneNumber(),
             'streak' => rand(0, 200),
-            'max_streak'=> rand(100, 200),
-            'weekly_day_goals' => rand(0,7),
+            'max_streak' => rand(100, 200),
+            'weekly_day_goals' => rand(0, 7),
             'daily_minutes_goal' => rand(20, 120),
-            'secondary_activity' => fake()->randomElement(['Reading', 'Gym', 'Running', 'Yoga']),
+            'secondary_activity' => fake()->randomElement(SecondaryActivities::cases())->value,
             'is_private' => fake()->boolean(5),
             'role' => fake()->randomElement(['admin', 'user', 'vip']),
         ];
@@ -46,7 +48,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
